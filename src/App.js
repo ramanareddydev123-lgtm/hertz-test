@@ -154,7 +154,7 @@ function App() {
       {
         !loading && githubData.map((item) => { 
           return (
-            <li className='list-item' key={item.id} onKeyPress={() => handleKeyPress} onClick={() => handleOpenDrawer(item)}> <span>{item.name}</span> : <span>{item.description}</span></li>
+            <li className='list-item' key={item.id} onKeyPress={handleKeyPress} onClick={() => handleOpenDrawer(item)}> <span>{item.name}</span> : <span>{item.description}</span></li>
           )
          
         })
