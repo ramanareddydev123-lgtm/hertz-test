@@ -94,46 +94,39 @@ function App() {
 
   const fetchData = async (searchData, page, filters) => {
     setLoading(true);
-    // const res = await fetch('https://api.github.com/users/octocat/repos');
-    // const data = await res.json();
-
-    const splicedData = mockJson.splice(0, 2);
-    console.log();
-    setGithubData(splicedData)
+    // Simulate API pagination by slicing the data
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedData = mockJson.slice(startIndex, endIndex);
+    setGithubData(paginatedData);
     setLoading(false);
-    // console.log(data);  
   }
 
   const handleChange = (e) => {
-
     const value = e.target.value;
-
-    if (value){
-      const tempGithubData = githubData.filter((item) => item.name.includes(value));
-      setGithubData(tempGithubData);
+    
+    if (value) {
+      const filteredData = mockJson.filter((item) => 
+        item.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setGithubData(filteredData.slice(0, pageSize));
+      setCurrentPage(1);
     } else {
-      setGithubData(mockJson)
+      const initialData = mockJson.slice(0, pageSize);
+      setGithubData(initialData);
+      setCurrentPage(1);
     }
-    // fetchData(value, 0, {});
-
   }
 
   const debouncedChange = debounce(handleChange, 300);
 
   useEffect(() => {
-
     fetchData();
-
-  },[]);
+  }, []);
 
   useEffect(() => {
-
-    if (currentPage) {
-      const splicedData = mockJson.splice(currentPage, 2);
-      setGithubData(prevdata=> [...prevdata, ...splicedData])
-    }
-    
-  }, [currentPage])
+    fetchData();
+  }, [currentPage]);
 
   if (loading) {
 
@@ -169,8 +162,21 @@ function App() {
       </ul>
 
       <div>
-        <button disabled={currentPage === 1} onClick={() => { setCurrentPage(currentPage - 1)}}> Prev </button>
-        <button disabled={(currentPage * pageSize) >= githubData.length} onClick={() => { setCurrentPage(currentPage + 1)}}> Next </button>
+        <button 
+          disabled={currentPage === 1} 
+          onClick={() => setCurrentPage(currentPage - 1)}
+        > 
+          Prev 
+        </button>
+        <span style={{margin: '0 10px'}}>
+          Page {currentPage} of {Math.ceil(mockJson.length / pageSize)}
+        </span>
+        <button 
+          disabled={currentPage >= Math.ceil(mockJson.length / pageSize)} 
+          onClick={() => setCurrentPage(currentPage + 1)}
+        > 
+          Next 
+        </button>
       </div>
 
       {openDrawer && <Drawer
