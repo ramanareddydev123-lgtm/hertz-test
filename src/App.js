@@ -9,7 +9,7 @@ import Drawer from '@mui/material/Drawer';
 // create a mock server - list of github repos
 // search, sort, filter, pagination
 // debounce - search
-// dropdown component
+// dropdown components
 
 const mockJson = [
   {
